@@ -1,0 +1,32 @@
+/* Aplico a todos los elementos (*) */
+table{
+    /* hace que el tamaño de la caja sea el total contando el padding, contenido, border, etc 
+       por defecto el box-sizing es content-box
+    */
+    box-sizing: border-box;
+    padding: 0;
+    border: 0;
+}
+ol{
+    padding: 20px;
+}
+/* Selector etiquetas */
+table,th,td{
+    border: 1px solid black
+}
+
+table{
+    /* Esta propiedad hce que los bordes colapsen y se unan */
+    border-collapse: collapse;
+}
+td{
+    padding: 5px 10px;
+    text-align: center;
+}
+thead{
+    background-color: lightgoldenrodyellow;
+}
+/* Le digo que si tengo una etiqueta img dentro de una etiqueta a*/
+a > img{
+    height: 20px;
+}
