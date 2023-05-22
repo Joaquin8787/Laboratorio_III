@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./js/index.js" defer></script>
+    <title>Formularios</title>
+</head>
+<body>
+    <h1>Formularios</h1>
+    <form action="#">
+        <label for="txtNombre">Nombre</label>
+        <input type="text"  name="nombre" id="txtNombre" placeholder="Ingrese nombre">
+        <label for="txtEmail">Email</label>
+        <input type="email" name="email" id="txtEmail" placeholder="Ingrese Email">
+        <label for="txtEdad">Edad</label>
+        <input type="number" name="edad" id="txtEdad" placeholder="Ingrese Edad" min="18" max="22" value="20">
+        <label for="txtRange">Range</label>
+        <input type="range" name="rango" id="txtRange"  min="18" max="22" value="20">
+        <label for="txtColor">Color</label>
+        <input type="color" name="color" id="txtColor" placeholder="Ingrese Color">
+
+        <input type="submit">
+    </form>
+</body>
+</html>
