@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style/style.css">
+    <script type="module" src="./script/script.js" defer></script>
+    <title>Heroes y Villanos</title>
+</head>
+<body>
+    <div class="contenedor">
+        <main>
+            <h2>Form Datos</h2>
+            <section id="encabezado">
+                <label for="filter">Filtrar por</label>
+                <select id="filter"></select>
+                <label>Calcular Edad Promedio:</label>
+                <input type="text" id="edadPromedio" disabled>
+                <input type="button" id="btnCalcularEdadPromedio" value="Calcular">
+                <div class="showColumn">
+                    <input type="checkbox" id="idCol" checked><span>Id</span>
+                    <input type="checkbox" id="nombreCol" checked><span>Nombre</span>
+                    <input type="checkbox" id="apellidoCol" checked><span>Apellido</span>
+                    <input type="checkbox" id="edadCol" checked><span>Edad</span>
+                    <input type="checkbox" id="alteregoCol" checked><span>AlterEgo</span>
+                    <input type="checkbox" id="ciudadCol" checked><span>Ciudad</span>
+                    <input type="checkbox" id="publicadoCol" checked><span>Publicado</span>
+                    <input type="checkbox" id="enemigoCol" checked><span>Enemigo</span>
+                    <input type="checkbox" id="robosCol" checked><span>Robos</span>
+                    <input type="checkbox" id="asesinatosCol" checked><span>Asesinatos</span>
+                </div>
+            </section>
+            <section id="section-table" class="seccion-tabla"><table id="tabla"></table></section>
+            <button type="button" id="alta">Agregar</button>
+        </main>
+            <section id="formulario" class="seccion-formulario" style="display: none;">
+                <div class="botones">
+                    <input type="button" class="boton" id="nuevo" value="Alta">
+                    <input type="button" class="boton" id="modificar" value="Modificar">
+                    <input type="button" class="boton" id="eliminar" value="Eliminar">
+                    <input type="button" class="boton" id="cancelar" value="Cancelar">
+                </div>
+            </section>
+    </div>
+</body>
+</html>

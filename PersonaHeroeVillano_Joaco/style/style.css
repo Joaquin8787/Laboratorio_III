@@ -1,0 +1,111 @@
+/* table,
+header h1,
+.group-form,
+#botonera input,
+.seccion-tabla h2
+{
+    box-shadow: 5px 5px 2px 0px rgba(0, 0, 0, 1);
+} */
+.seccion-formulario,
+.seccion-tabla
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2%;
+    margin-left: 5%;
+
+}
+form div {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+}
+
+body {
+    background-color: lightgrey;
+}
+
+table {            
+    text-align: center;
+    border-collapse: collapse;
+    margin: 10px;
+    font-size: 18px;
+}
+
+thead {
+    background: whitesmoke;           
+}
+
+td {
+    padding: 8px;
+    background: #dff7f7;                        
+    border: 4px solid white;            
+    font-size: 18px;
+    color: black;
+    cursor: pointer;           
+}
+
+header {
+    display: flex;
+    justify-content: space-around;
+
+}
+
+h2 {
+    text-align: center;
+}
+
+tr:hover td {
+    background: #8bdaf7;            
+    border: 4px solid white;   
+    color: white;         
+}
+
+fieldset {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40%; /* Asumiendo que el form tiene un ancho del 20% */
+    padding: 16px;
+    margin: 30px;
+    border-radius: 4px;
+    background-color: #dff7f7;
+}
+
+.show {
+    display: flex;
+    justify-content: space-between;
+    background-color: #fff;
+    border-radius: 10px;
+    margin-top: 10px;
+    padding: 5px;
+}        
+.botones {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Alinea los botones verticalmente en el centro */
+    padding: 0 10px; /* Añade un poco de padding para darle espacio alrededor de los botones */
+}
+.boton {
+    flex-grow: 1;
+    margin: 0 5px; /* Añade un poco de margen entre los botones para separarlos */
+}
+input.button {
+    width: 100%;
+    background-color: #0061d8;
+    color: white;
+    border: none;
+    cursor: pointer;     
+    padding: 8px 8px;       
+}
+
+form label {    
+    display: inline-block;    
+    width: 100px;
+    margin: 5px;
+}        
+
+/* .abm .error{background-color: red;
+width: 90%;} */
