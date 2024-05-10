@@ -8,8 +8,8 @@ export const createForm = (data, color, identidicador,tipos) => {
     const fieldset = document.createElement('fieldset');
     fieldset.classList.add('group-form');
 
-    const form = document.createElement('form');
-    fieldset.appendChild(form);
+    const $form = document.createElement('form');
+    fieldset.appendChild($form);
 
     // let propiedades = data.reduce((acumulador, objetoActual) => {
     //     Object.keys(objetoActual).forEach(propiedad => {
@@ -35,7 +35,7 @@ export const createForm = (data, color, identidicador,tipos) => {
         select.appendChild(option);
     });
     div.appendChild(select);
-    form.appendChild(div);
+    $form.appendChild(div);
 
     return fieldset;
 };
@@ -44,7 +44,7 @@ export const createForm = (data, color, identidicador,tipos) => {
 export const crearInputs = () => {
     let propiedades = [];
     let form = document.querySelector("form");
-    let select = document.querySelector('[name="tipo"]');
+    const select = document.querySelector('[name="tipo"]');
 
     if (select.value === "Heroe") {
         propiedades = Object.getOwnPropertyNames(new Heroe());
@@ -74,7 +74,11 @@ export const crearInputs = () => {
         const input = document.createElement('input');
         input.type = 'text';
         input.className = 'input' 
-        input.id = propiedad; 
+        input.id = propiedad;
+        
+        if(input.id === "id"){
+            input.disabled = true;
+        }
 
         label.setAttribute('for', propiedad);
         // Añadir el label y el input al formulario

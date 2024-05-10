@@ -1,8 +1,8 @@
 import { lista } from "./data.js";
 import {Villano} from "./entidades/villano.js"
 import {Heroe} from "./entidades/heroe.js";
-import {createForm,resetForm,crearInputs} from "./form.js";
-import { updateTable, createTable} from "./tabla.js";
+import {createForm,crearInputs} from "./form.js";
+import { updateTable} from "./tabla.js";
 
 //Importo los datos
 const listaPersonas = JSON.parse(JSON.stringify(lista) || []);
@@ -22,8 +22,11 @@ const titulo = "Lista de Heroes y Villanos";
 //Evaluo el tipo de cada registro y lo paso por el constructor correspondiente
 const listaObjetos = procesarRegistros(listaPersonas);
 let datosFiltrados = listaObjetos;
+let btnAlta = document.getElementById("alta");
+
 //Agrego el formulario como primer hijo
 $seccionFormulario.insertBefore(createForm(listaObjetos,colorHeader,identificador,tipos), $seccionFormulario.firstChild);
+const $formulario = document.querySelector('form');
 
 //filtrar por (todos/heroes/villanos)
 opciones.forEach(element =>{
@@ -40,16 +43,27 @@ crearInputs();
 window.addEventListener('click', (e) => {
     if (e.target.matches('td')) {
         handlerSelectedTD(e);
+        cambiarVisibilidad();
     }
     else if (e.target.matches('th')) {
         handlerSelectedTH(e);
-        console.log(datosFiltrados);
+    }
+    else if (e.target.matches("input[type='submit']")) {
+        handlerSubmit();
+        cambiarVisibilidad();
     }
     else if (e.target.id === 'btnCalcularEdadPromedio') {
         
         let edadPromedio = calcularEdadPromedio(datosFiltrados);
         let inputText = document.getElementById('edadPromedio');
         inputText.value = edadPromedio;
+    }
+    else if (e.target.matches("input[type='reset']")) {
+        console.log("Cancelando");
+        resetFormulario($formulario);
+    }
+    else if (e.target.matches("input[id='eliminar']")){
+        handlerDelete($formulario.id.value);
     }
 });
 
@@ -66,16 +80,6 @@ document.querySelectorAll('.showColumn input[type="checkbox"]').forEach(checkbox
     });
 });
 
-function updateColumnStyle(columnClass,checkbox) {
-    const columns = document.querySelectorAll(`.${columnClass}Th`);
-    columns.forEach(column => {
-        // Asegúrate de que 'column' no sea undefined antes de intentar acceder a su propiedad 'style'
-        if (column) {
-            column.style.display = checkbox.checked?  '':'none';
-        }
-    });
-}
-
 $seccionHeaderTabla.addEventListener("change", function() {
     const tipoSeleccionado = this.value;
 
@@ -88,29 +92,117 @@ $seccionHeaderTabla.addEventListener("change", function() {
         datosFiltrados = listaObjetos;
         updateTable($seccionTabla, listaObjetos, colorHeader, identificador, titulo);
     }
+    resetCheckbox();
 });
 
 select.addEventListener("change", crearInputs);
-
-let btnAlta = document.getElementById("alta");
 btnAlta.addEventListener("click", cambiarVisibilidad);
 
 // FUNCIONES
+function resetCheckbox(){
+    let checkboxes = document.querySelectorAll('.showColumn input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = true;
+    });
+}
+
+function updateColumnStyle(columnClass,checkbox) {
+    const columns = document.querySelectorAll(`.${columnClass}Th`);
+    columns.forEach(column => {
+        if (column) {
+            column.style.display = checkbox.checked?  '':'none';
+        }
+    });
+}
+
+function handlerCreate(nuevoUsuario) {
+    console.log("Creando");
+    listaObjetos.push(nuevoUsuario);
+
+    updateTable($seccionTabla, listaObjetos, colorHeader, identificador, titulo);
+}
+
+function handlerUpdate(usuarioAModificar,valoresNuevos) {
+    console.log("Actualizando");
+    if(esRegistroDeTipo(valoresNuevos,Heroe) && esRegistroDeTipo(usuarioAModificar,Heroe)){
+        console.log("Heroe");
+        Object.keys(valoresNuevos).forEach(key => {
+            // Actualiza la propiedad correspondiente en usuarioAModificar con el valor nuevo
+            usuarioAModificar[key] = valoresNuevos[key];
+        });
+    }
+    else{
+        console.log("Villano");
+        Object.keys(valoresNuevos).forEach(key => {
+            // Actualiza la propiedad correspondiente en usuarioAModificar con el valor nuevo
+            usuarioAModificar[key] = valoresNuevos[key];
+        });
+    }
+    let index = listaObjetos.findIndex((elemento) => elemento.id == usuarioAModificar.id);
+    listaObjetos.splice(index, 1, usuarioAModificar);
+
+    updateTable($seccionTabla, listaObjetos, colorHeader, identificador, titulo);
+}
+
+function handlerDelete(id) {
+    console.log("Eliminado");
+    let index = listaObjetos.findIndex((elemento) => elemento.id == id);
+    if(confirm("¿Desea eliminar este SuperHeroe?")){
+        listaObjetos.splice(index, 1);
+        updateTable($seccionTabla, listaObjetos, colorHeader, identificador, titulo);
+        cambiarVisibilidad();
+    }
+
+}
+
+function handlerSubmit() {    
+    const $inputs = $formulario.querySelectorAll('input[type="text"]');
+    let  values = {};
+
+    $inputs.forEach(function(input) {
+        values[input.id] = input.value;
+    });
+    try {
+        // Verifico que la persona sea nueva
+        if (values.id == '') {
+
+            if (listaObjetos.length > 0) {
+                values.id = generarId();
+            }
+            if(esRegistroDeTipo(values,Heroe)){
+                console.log("heroe");
+                const nuevoHeroe = new Heroe(values.id, values.nombre, values.apellido, values.edad, values.alterego, values.ciudad, values.publicado);
+                if (confirm("¿Desea cargar el Heroe?")) handlerCreate(nuevoHeroe);
+            }
+            else{
+                console.log("villano");
+                const nuevoVillano = new Villano(values.id, values.nombre, values.apellido, values.edad, values.enemigo, values.robos, values.asesinatos);
+                if (confirm("¿Desea cargar el Villano?")) handlerCreate(nuevoVillano);
+            }
+        } else {
+            const objetoOriginal = listaObjetos.find(obj => obj.id == values.id);
+            if (confirm("¿Desea realizar la modificación?")) handlerUpdate(objetoOriginal,values);
+        }
+        resetFormulario($formulario);
+    } catch (error) {
+        alert(error.message);
+    }
+}
+function generarId()
+    {
+        let id;
+        do{
+            id = Math.floor(Math.random() * 10000)+1;
+        }while(listaObjetos.some(p=>p.id==id))
+
+        return id;
+    }
 
 function handlerSelectedTD(e) {
-    const selector = e.target.parentElement.dataset.id;
-    console.log(selector);
-    // const selectedSuperHeroe = superheroes.find((SuperHeroe) => SuperHeroe.id == selector);
-    // if (!document.getElementById('boton-cancelar')) {
-    //     const $botonera = document.getElementById('botonera');
-    //     const botonCancelar = document.createElement('input');
-    //     botonCancelar.type = 'reset';
-    //     botonCancelar.value = 'Cancelar';
-    //     botonCancelar.id = 'boton-cancelar';
-    //     botonCancelar.classList.add('cancelar');
-    //     $botonera.appendChild(botonCancelar);
-    // }
-    // cargarFormulario($formulario, selectedSuperHeroe);
+    const idSeleccionado = e.target.parentElement.dataset.id;
+
+    const usuarioSeleccionado = listaObjetos.find((elemento) => elemento.id == idSeleccionado);
+    cargarFormulario($formulario, usuarioSeleccionado);
 }
 
 function handlerSelectedTH(e) {
@@ -144,10 +236,8 @@ function ordenarListaPorCriterio(lista, criterio, orden) {
 function calcularEdadPromedio(lista) {
     // Sumar todas las edades
     const sumaEdades = lista.reduce((total, elemento) => total + elemento.edad, 0);
-
     // Calcular el promedio
     const promedioEdad = sumaEdades / lista.length;
-
     return promedioEdad;
 }
 
@@ -214,6 +304,8 @@ function cambiarVisibilidad() {
         tabla.style.display = "";
         boton.value = "Alta";
         boton.textContent = "Alta";
+        resetFormulario($formulario);
+        resetCheckbox();
     }
     else {
         form.style.display = "";
@@ -222,4 +314,39 @@ function cambiarVisibilidad() {
         boton.value = "Volver";
         boton.textContent = "Volver";
     }
+}
+
+function cargarFormulario(formulario, usuario) {
+    const $boton = document.getElementById("accion");
+    const $botonEliminar = document.getElementById("eliminar");
+    $botonEliminar.style.display = "block";
+    $boton.value = "Modificar";
+
+    if(usuario instanceof Villano){
+        select.value = "Villano"
+        crearInputs();
+
+        formulario.enemigo.value = usuario.enemigo;
+        formulario.robos.value = usuario.robos;
+        formulario.asesinatos.value = usuario.asesinatos;
+    }
+    else{
+        select.value = "Heroe"
+        crearInputs();
+        formulario.alterego.value = usuario.alterego;
+        formulario.ciudad.value = usuario.ciudad;
+        formulario.publicado.value = usuario.publicado;
+    }
+    formulario.id.value = usuario.id;
+    formulario.nombre.value = usuario.nombre;
+    formulario.apellido.value = usuario.apellido;
+    formulario.edad.value = usuario.edad;
+}
+
+function resetFormulario(formulario) {
+    const $boton = document.getElementById("accion");
+    const $botonEliminar = document.getElementById("eliminar");
+    $botonEliminar.style.display = "none";
+    $boton.value = "Alta";
+    formulario.reset();
 }
